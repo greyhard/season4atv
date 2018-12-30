@@ -13,6 +13,10 @@
 		142733F721B5C5250091D616 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 142733F621B5C5250091D616 /* Assets.xcassets */; };
 		1427340221B5C5260091D616 /* SeasonvarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1427340121B5C5260091D616 /* SeasonvarTests.swift */; };
 		1427340D21B5C5260091D616 /* SeasonvarUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1427340C21B5C5260091D616 /* SeasonvarUITests.swift */; };
+		144DA8C821CEEED600B11FB9 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 144DA8C721CEEED600B11FB9 /* LoginViewController.swift */; };
+		1464693D21D7E13700C9F43B /* PauseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1464693C21D7E13700C9F43B /* PauseViewController.swift */; };
+		147C017621C7CF3800564DD6 /* checkAuthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 147C017521C7CF3800564DD6 /* checkAuthViewController.swift */; };
+		2C1F5EA1D5F5C1BA21E1AF09 /* libPods-Seasonvar.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FD927E9DF3338D3E2ED1606C /* libPods-Seasonvar.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +49,12 @@
 		1427340821B5C5260091D616 /* SeasonvarUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SeasonvarUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1427340C21B5C5260091D616 /* SeasonvarUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SeasonvarUITests.swift; sourceTree = "<group>"; };
 		1427340E21B5C5260091D616 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		144DA8C721CEEED600B11FB9 /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		1464693C21D7E13700C9F43B /* PauseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PauseViewController.swift; sourceTree = "<group>"; };
+		147C017521C7CF3800564DD6 /* checkAuthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = checkAuthViewController.swift; sourceTree = "<group>"; };
+		54C3528EE28CC74FF70D1E27 /* Pods-Seasonvar.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Seasonvar.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Seasonvar/Pods-Seasonvar.debug.xcconfig"; sourceTree = "<group>"; };
+		B9A7B2B35A4D1872335FD45F /* Pods-Seasonvar.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Seasonvar.release.xcconfig"; path = "Pods/Target Support Files/Pods-Seasonvar/Pods-Seasonvar.release.xcconfig"; sourceTree = "<group>"; };
+		FD927E9DF3338D3E2ED1606C /* libPods-Seasonvar.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Seasonvar.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -52,6 +62,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2C1F5EA1D5F5C1BA21E1AF09 /* libPods-Seasonvar.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -79,6 +90,8 @@
 				1427340021B5C5260091D616 /* SeasonvarTests */,
 				1427340B21B5C5260091D616 /* SeasonvarUITests */,
 				142733ED21B5C5230091D616 /* Products */,
+				D23CC7CE5E04F69F96546082 /* Pods */,
+				8F2B9C046F0569D302A349F6 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -100,6 +113,9 @@
 				142733F321B5C5230091D616 /* Main.storyboard */,
 				142733F621B5C5250091D616 /* Assets.xcassets */,
 				142733F821B5C5250091D616 /* Info.plist */,
+				147C017521C7CF3800564DD6 /* checkAuthViewController.swift */,
+				144DA8C721CEEED600B11FB9 /* LoginViewController.swift */,
+				1464693C21D7E13700C9F43B /* PauseViewController.swift */,
 			);
 			path = Seasonvar;
 			sourceTree = "<group>";
@@ -122,6 +138,23 @@
 			path = SeasonvarUITests;
 			sourceTree = "<group>";
 		};
+		8F2B9C046F0569D302A349F6 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				FD927E9DF3338D3E2ED1606C /* libPods-Seasonvar.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D23CC7CE5E04F69F96546082 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				54C3528EE28CC74FF70D1E27 /* Pods-Seasonvar.debug.xcconfig */,
+				B9A7B2B35A4D1872335FD45F /* Pods-Seasonvar.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -129,6 +162,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 1427341121B5C5260091D616 /* Build configuration list for PBXNativeTarget "Seasonvar" */;
 			buildPhases = (
+				B5F953C1B6CFA8377FA13F26 /* [CP] Check Pods Manifest.lock */,
 				142733E821B5C5230091D616 /* Sources */,
 				142733E921B5C5230091D616 /* Frameworks */,
 				142733EA21B5C5230091D616 /* Resources */,
@@ -247,11 +281,39 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		B5F953C1B6CFA8377FA13F26 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Seasonvar-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		142733E821B5C5230091D616 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				144DA8C821CEEED600B11FB9 /* LoginViewController.swift in Sources */,
+				147C017621C7CF3800564DD6 /* checkAuthViewController.swift in Sources */,
+				1464693D21D7E13700C9F43B /* PauseViewController.swift in Sources */,
 				142733F221B5C5230091D616 /* ViewController.swift in Sources */,
 				142733F021B5C5230091D616 /* AppDelegate.swift in Sources */,
 			);
@@ -416,6 +478,7 @@
 		};
 		1427341221B5C5260091D616 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 54C3528EE28CC74FF70D1E27 /* Pods-Seasonvar.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -435,6 +498,7 @@
 		};
 		1427341321B5C5260091D616 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B9A7B2B35A4D1872335FD45F /* Pods-Seasonvar.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;

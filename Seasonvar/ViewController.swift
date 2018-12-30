@@ -10,104 +10,120 @@ import UIKit
 import Foundation
 import AVKit
 import AVFoundation
+import Alamofire
+import SwiftSoup 
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
+    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var SeasonImage: UIImageView!
+    
     struct Video {
         var title: String?
         var link: String?
     }
-    
-    var num:Int = 0
-    var localPlayer:AVQueuePlayer = AVQueuePlayer.init()
-    var queueList: [Video] = []
-    var queue: [AVPlayerItem] = []
-    
-    @IBAction func buttonAction(_ sender: Any)
-    {
-//        let videoURL = URL(string: "http://data02-cdn.datalock.ru/fi2lm/243cb912a02b9b811a526d7e55eca399/7f_[AniDub].Fairy.Tail.-.010.[RUS.JAP].[1280x720.h264].[Ancord].a1.30.09.15.mp4")
-//        let player = AVPlayer(url: videoURL!)
-//        let playerViewController = AVPlayerViewController()
-//        playerViewController.player = player
-//        self.present(playerViewController, animated: true) {
-//            playerViewController.player!.play()
-//        }
-        
 
-        
-//        queue.append(AVPlayerItem(asset: asset, automaticallyLoadedAssetKeys: assetKeys))
-//        queue.append(AVPlayerItem(asset: asset, automaticallyLoadedAssetKeys: assetKeys))
-//
-  
-        getJsonFromUrl();
-    }
+    let cookieStorage = HTTPCookieStorage.shared
+    var num:Int = 0
+    var is_played: Bool = false;
+    var queueList: [Video] = []
+    var season: PauseViewController.Season!
     
-    @IBOutlet weak var makelist: UITableView!
+    let playerViewController: AVPlayerViewController = AVPlayerViewController.init()
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.tableView.delegate = self
+        self.tableView.dataSource = self
+
+        let image = self.season.image!.replacingOccurrences(of: "small", with: "large")
+        let url = URL(string: image)
+        let data = try? Data(contentsOf: url!) //make sure your image in this url does exist, otherwise unwrap in a if let check / try-catch
+        SeasonImage.image = UIImage(data: data!)
+
+//        getJsonFromUrl()
     }
     
     @objc func playerDidFinishPlaying(note: NSNotification){
         self.num += 1
         print("Next Play: \(self.num)")
-        self.play(playerItem: self.queue[self.num])
+        play(series: self.num)
     }
-    
-    func playAll(){
-        
-        let queuePlayer = AVQueuePlayer(items: self.queue)
-        let playerViewController = AVPlayerViewController()
-        playerViewController.showsPlaybackControls = true
-        playerViewController.player = queuePlayer
-        present(playerViewController, animated: true) {
-            playerViewController.player!.play()
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if(is_played){
+            tableView.selectRow(at: IndexPath(row: num, section: 0), animated: true, scrollPosition: UITableView.ScrollPosition.middle)
         }
     }
     
-    
-    func play(playerItem: AVPlayerItem){
+    func play(series: Int){
 
-        let player = AVPlayer(playerItem: playerItem)
-
-        NotificationCenter.default.addObserver(self, selector:#selector(self.playerDidFinishPlaying(note:)),name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: player.currentItem)
-
-        let playerViewController = AVPlayerViewController()
-        playerViewController.showsPlaybackControls = true
-        playerViewController.player = player
-        self.present(playerViewController, animated: true) {
-            playerViewController.player!.play()
+        if let playerItem = getMediaItem(num: series) {
+            
+            num = series;
+            
+            if(is_played){
+                playerViewController.player!.replaceCurrentItem(with: playerItem)
+                
+                NotificationCenter.default.addObserver(self, selector:#selector(self.playerDidFinishPlaying(note:)),name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: playerViewController.player!.currentItem)
+                
+            }else{
+                let player = AVPlayer(playerItem: playerItem)
+                
+                NotificationCenter.default.addObserver(self, selector:#selector(self.playerDidFinishPlaying(note:)),name: NSNotification.Name.AVPlayerItemDidPlayToEndTime, object: player.currentItem)
+                
+                playerViewController.player = player
+                
+            }
+            
+            playerViewController.showsPlaybackControls = true
+            dismiss(animated: true, completion: nil)
+            present(playerViewController, animated: true) {
+                self.playerViewController.player!.play()
+                self.is_played = true;
+            }
+            
         }
 
     }
 
     func addToQueueList(link: String, title: String ){
         if verifyUrl(urlString: link) {
-            self.queueList.append(Video(title: title, link: link))
+            queueList.append(Video(title: title, link: link))
+        }else{
+            let linksArr = link.components(separatedBy: " or ");
+            if verifyUrl(urlString: linksArr[1]) {
+                queueList.append(Video(title: title, link: linksArr[1]))
+            }
         }
     }
     
-    func addToQueue(link: String, title: String){
+    func getMediaItem(num: Int) -> AVPlayerItem? {
+        
+        let video = self.queueList[num] as Video
         
         let assetKeys = [
             "playable",
             "hasProtectedContent"
         ]
         
-        if verifyUrl(urlString: link) {
-            print(link)
-            let asset = AVAsset(url: URL(string: link)!)
+        if verifyUrl(urlString: video.link) {
+            print(video.link!)
+            let asset = AVAsset(url: URL(string: video.link!)!)
             let mediaItem = AVPlayerItem(asset: asset, automaticallyLoadedAssetKeys: assetKeys)
             
             var allItems: [AVMetadataItem] = []
-            allItems.append(self.metadataItem(identifier: AVMetadataIdentifier.commonIdentifierTitle, value: title as (NSCopying & NSObjectProtocol)?)!)
-        
+            allItems.append(self.metadataItem(identifier: AVMetadataIdentifier.commonIdentifierTitle, value: video.title! as (NSCopying & NSObjectProtocol)?)!)
+            
             allItems.append(self.metadataItem(identifier: AVMetadataIdentifier.commonIdentifierDescription, value: "" as (NSCopying & NSObjectProtocol)?)!)
             
             mediaItem.externalMetadata = allItems
             
-            self.queue.append(mediaItem)
+            return mediaItem;
         }
+        return nil
     }
     
     func metadataItem(identifier: AVMetadataIdentifier, value: (NSCopying & NSObjectProtocol)?) -> AVMetadataItem? {
@@ -133,6 +149,35 @@ class ViewController: UIViewController {
         return false
     }
     //this function is fetching the json from URL
+    func getSeason(season_url: String!){
+
+        if let cookies = self.cookieStorage.cookies {
+            Alamofire.SessionManager.default.session.configuration.httpCookieStorage?.setCookies(cookies, for: URL(string: season_url) , mainDocumentURL: nil)
+            
+            request(season_url, method: .get ).responseData { response in
+                
+                if let data = response.result.value, let utf8Text = String(data: data, encoding: .utf8) {
+                    do {
+                        let doc: Document = try SwiftSoup.parse(utf8Text)
+
+                        let div: Elements = try doc.select("div.pgs-marks-el")
+                        for block: Element in div.array() {
+                            let blockHref: String = try block.select("a").attr("href")
+                            let blockText: String = try block.select("div.pgs-marks-name").text()
+                            let blockSeasonText: String = try block.select("div.pgs-marks-seas").text()
+                            let blockImage: String = try block.select("div.pgs-marks-img").select("img").attr("src")
+                        }
+                        
+                    } catch Exception.Error(let type, let message) {
+                        print("\(type) \(message)")
+                    } catch {
+                        print("error")
+                    }
+                }
+            }
+        }
+    }
+    
     func getJsonFromUrl(){
         
         //creating a NSURL
@@ -157,67 +202,46 @@ class ViewController: UIViewController {
                                         
                                         let decodedData = Data(base64Encoded: newString2)!
                                         if let decodedString = String(data: decodedData, encoding: .utf8) {
-                                            if i > 24 {
-                                                self.addToQueue(link: decodedString, title: noBrTitle)
-                                            }
-//                                            self.addToQueueList(link: decodedString, title: title)
+                                            
+//                                            print("\(noBrTitle) \(decodedString)")
+                                            self.addToQueueList(link: decodedString, title: noBrTitle)
+                                            
                                         }else{
                                             print(fileUrl)
                                             print(newString)
                                             print(newString2)
                                         }
-//
                                     }
                                 }
                             }
-//                            if let seriesList = try? JSONSerialization.jsonObject(with: seriesArray, options: .allowFragments) as? NSArray {
-                        
-//                            }
-//                            for series in seriesList {
-//                                if let seriesDict  = series as? NSDictionary {
-//                                    if let title = folder.value(forKey: "title") {
-//                                        print(title as? String ?? "None")
-//                                    }
-//                                }
-//                            }
-//                            print(seriesList)
+
+                            DispatchQueue.main.async {
+                                self.tableView.reloadData()
+                            }
                         }
                     }
                 }
             }
-//            self.play(playerItem: self.queue[self.num])
-            self.playAll()
         }).resume()
+    
+    }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return queueList.count
+    }
+    
+    // возвращает очередную отображаемую ячейку таблицы
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "CustomCell")
+        let videofile = queueList[indexPath.row]
+        cell?.textLabel?.text = videofile.title
+        return cell!
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-//        //fetching the data from the url
-//        var Yourarray = [String]()
-//
-//        URLSession.shared.dataTask(with: (url as URL?)!, completionHandler: {(data, response, error) -> Void in
-//
-//            if let seriesArray = try? JSONSerialization.jsonObject(with: data!, options: .allowFragments) as? NSArray {
-//
-//
-//                    for make in seriesArray {
-//                        if let makeDict = make as? NSDictionary {
-//                            if let name = makeDict.value(forKey: "title") {
-//                                print(name as? String ?? "None")
-//                            }
-//                        }
-//                    }
-//
-//                //printing the json in console
-////                print(jsonObj!.value(forKey: "timezone")!)
-//
-//
-//            }
-//        }).resume()
+        self.play(series: indexPath.row);
         
-//        makelist.beginUpdates()
-//        makelist.insertRowsAtIndexPaths([
-//            NSIndexPath(forRow: Yourarray.count-1, inSection: 0)], withRowAnimation: .Automatic)
-//
-//        makelist.endUpdates()
     }
 
 }
-
